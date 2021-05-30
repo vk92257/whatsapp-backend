@@ -3,7 +3,7 @@ dotenv.config()
 import express from "express";
 import mongoose from 'mongoose';
 import messageRoute from './route/messagesRoute.js'
-// import Pusher from 'pusher'
+import Pusher from 'pusher'
 import cors from 'cors'
 const app = express();
 
@@ -12,13 +12,13 @@ app.use(express.json())
 
 //app configration
 
-// const pusher = new Pusher({
-//     appId: "1211171",
-//     key: "55d84ac3c86ba3931144",
-//     secret: "0c860dcc15eac53cfdd9",
-//     cluster: "ap2",
-//     useTLS: true
-//   });
+const pusher = new Pusher({
+    appId: "1211171",
+    key: "55d84ac3c86ba3931144",
+    secret: "0c860dcc15eac53cfdd9",
+    cluster: "ap2",
+    useTLS: true
+  });
 
 
 // const pusher = new Pusher({
@@ -30,29 +30,29 @@ app.use(express.json())
 //   });
 
 
-//   const db = mongoose.connection;
-//   db.once("open",()=>{
-//       console.log('db is connected');
-//   const msgCollection = db.collection("messagecontents")
-//   const changeStream = msgCollection.watch();
+  const db = mongoose.connection;
+  db.once("open",()=>{
+      console.log('db is connected');
+  const msgCollection = db.collection("messagecontents")
+  const changeStream = msgCollection.watch();
 
-//     changeStream.on("change",change=>{
-//         console.log(change);
+    changeStream.on("change",change=>{
+        console.log(change);
 
-//          if (change.operationType === "insert") {
-//              const messageDetails = change.fullDocument;
-//              pusher.trigger("messages",'inserted',{
-//                  name:messageDetails.name,
-//                  message: messageDetails.message,
-//                  timeStamp:messageDetails.timeStamp,
-//                  recieved: messageDetails.recieved
-//              });
-//          } else {
-//              console.log('error triggering Pusheer');
-//          }
-//     })
+         if (change.operationType === "insert") {
+             const messageDetails = change.fullDocument;
+             pusher.trigger("messages",'inserted',{
+                 name:messageDetails.name,
+                 message: messageDetails.message,
+                 timeStamp:messageDetails.timeStamp,
+                 recieved: messageDetails.recieved
+             });
+         } else {
+             console.log('error triggering Pusheer');
+         }
+    })
     
-//     })
+    })
 
 
 
