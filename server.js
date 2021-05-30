@@ -3,13 +3,12 @@ dotenv.config()
 import express from "express";
 import mongoose from 'mongoose';
 import messageRoute from './route/messagesRoute.js'
-import Pusher from 'pusher'
+// import Pusher from 'pusher'
 import cors from 'cors'
 const app = express();
 
 app.use(cors())
 app.use(express.json())
-
 
 //app configration
 
@@ -22,38 +21,38 @@ app.use(express.json())
 //   });
 
 
-const pusher = new Pusher({
-    appId: process.env.PUSHER_APP_ID,
-    key:process.env.PUSHER_KEY ,
-    secret: process.env.PUSHER_SECERET,
-    cluster: process.env.PUSHER_CLUSTER,
-    useTLS: process.env.PUSHER_USETLS
-  });
+// const pusher = new Pusher({
+//     appId: process.env.PUSHER_APP_ID,
+//     key:process.env.PUSHER_KEY ,
+//     secret: process.env.PUSHER_SECERET,
+//     cluster: process.env.PUSHER_CLUSTER,
+//     useTLS: process.env.PUSHER_USETLS
+//   });
 
 
-  const db = mongoose.connection;
-  db.once("open",()=>{
-      console.log('db is connected');
-  const msgCollection = db.collection("messagecontents")
-  const changeStream = msgCollection.watch();
+//   const db = mongoose.connection;
+//   db.once("open",()=>{
+//       console.log('db is connected');
+//   const msgCollection = db.collection("messagecontents")
+//   const changeStream = msgCollection.watch();
 
-    changeStream.on("change",change=>{
-        console.log(change);
+//     changeStream.on("change",change=>{
+//         console.log(change);
 
-         if (change.operationType === "insert") {
-             const messageDetails = change.fullDocument;
-             pusher.trigger("messages",'inserted',{
-                 name:messageDetails.name,
-                 message: messageDetails.message,
-                 timeStamp:messageDetails.timeStamp,
-                 recieved: messageDetails.recieved
-             });
-         } else {
-             console.log('error triggering Pusheer');
-         }
-    })
+//          if (change.operationType === "insert") {
+//              const messageDetails = change.fullDocument;
+//              pusher.trigger("messages",'inserted',{
+//                  name:messageDetails.name,
+//                  message: messageDetails.message,
+//                  timeStamp:messageDetails.timeStamp,
+//                  recieved: messageDetails.recieved
+//              });
+//          } else {
+//              console.log('error triggering Pusheer');
+//          }
+//     })
     
-    })
+//     })
 
 
 
@@ -82,6 +81,6 @@ app.get("/",(req,res)=>{
    
 
 let Port = process.env.PORT
-app.listen(Port , ()=>{
+app.listen( Port , ()=>{
     console.log(`App is Running  ${Port}`);
 })
